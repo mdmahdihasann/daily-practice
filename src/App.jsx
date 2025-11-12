@@ -1,25 +1,21 @@
-import { useEffectEvent } from 'react';
-import { useState, useEffect } from 'react';
+import { Suspense, useState } from "react";
+import Comments from "./components/postcomment/Comments";
+import Posts from "./components/postcomment/Posts";
 
-export default function Timer() {
-  const [count, setCount] = useState(0);
+export default function App() {
+  const [selectData, setSelectData] = useState("");
 
-  const onTick = useEffectEvent(() => {
-    setCount(c=> c + 1);
-  });
+  function handleSelectedData(e) {
+    setSelectData(e.target.value);
+  }
 
-  useEffect(() => {
-    
-    console.log('✅ Creating an interval');
-    const id = setInterval(() => {
-      console.log('⏰ Interval tick');
-      onTick()
-    }, 1000);
-    return () => {
-      console.log('❌ Clearing an interval');
-      clearInterval(id);
-    };
-  }, []);
+  return (
+    <>
+      <Suspense fallback={<h2>loading...</h2>}>
+        <Posts handleSelectedData={handleSelectedData} />
+      </Suspense>
 
-  return <h1>Counter: {count}</h1>
+      {selectData && <Comments selectData={selectData} />}
+    </>
+  );
 }
